@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Louis T. Getterman IV
-  description: 'OpenVPN client using IPredator service'
+  description: 'OpenVPN client using IPredator service to assist in network diagnostics.'
   license: CC-BY-SA
   min_ansible_version: 1.9
   platforms:
