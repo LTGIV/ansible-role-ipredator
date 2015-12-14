@@ -1,0 +1,9 @@
+---
+- name: 'Install VPN tools (OS Family: Debian)'
+  apt: >
+   update_cache=yes
+   pkg={{ item }}
+   state=installed
+  with_items:
+    - openvpn
+    - resolvconf

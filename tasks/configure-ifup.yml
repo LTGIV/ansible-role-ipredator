@@ -1,0 +1,27 @@
+---
+- name: 'Script exists: Interface Up'
+  stat: >
+   path='{{ openvpn_if_up.1 }}'
+   follow=yes
+  register: scriptfile
+  when: openvpn_if_up.1 is defined
+
+- fail: >
+   msg='Invalid script for Interface Up: {{ openvpn_if_up.1 }}'
+  when: openvpn_if_up.1 is defined and scriptfile.stat.exists == False
+
+- name: 'Enable script: Interface Up'
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^up '
+   line='up {{ openvpn_if_up.1 }}'
+   insertbefore='^<ca>$'
+   state=present
+  when: openvpn_if_up.1 is defined
+
+- name: 'Disable script: Interface Up'
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^up '
+   state=absent
+  when: openvpn_if_up is not defined or openvpn_if_up.1 is not defined

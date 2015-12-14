@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+ip rule add from {{ openvpn_route_address }} table 128
+ip route add table 128 to {{ openvpn_route_network }}/{{ openvpn_route_cidr }} dev {{ openvpn_route_if }}
+ip route add table 128 default via {{ openvpn_route_gateway }}

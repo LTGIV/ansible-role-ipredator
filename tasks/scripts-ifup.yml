@@ -1,0 +1,23 @@
+---
+- name: 'Install Template: Generic Script - Interface Up'
+  template: >
+   src=vpn-scripts.bash.j2
+   dest='{{ openvpn_if_up.1 }}'
+   backup=no
+   force=yes
+   owner={{ openvpn_owner }}
+   group={{ openvpn_group }}
+   mode=0700
+  when: openvpn_if_up is defined and openvpn_if_up.0 == 'template' and openvpn_if_up.1 is defined
+
+- name: 'Copy Program: Interface Up'
+  copy: >
+   src=openvpn_if_up.0
+   dest=openvpn_if_up.1
+   backup=no
+   follow=yes
+   force=yes
+   owner={{ openvpn_owner }}
+   group={{ openvpn_group }}
+   mode=0700
+  when: openvpn_if_up is defined and (openvpn_if_up.0 != '' and openvpn_if_up.0 != 'template') and openvpn_if_up.1 is defined

@@ -1,0 +1,27 @@
+---
+- name: 'Script exists: Route Up'
+  stat: >
+   path='{{ openvpn_route_up.1 }}'
+   follow=yes
+  register: scriptfile
+  when: openvpn_route_up.1 is defined
+
+- fail: >
+   msg='Invalid script for Route Up: {{ openvpn_route_up.1 }}'
+  when: openvpn_route_up.1 is defined and scriptfile.stat.exists == False
+
+- name: 'Enable script: Route Up'
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^route-up '
+   line='route-up {{ openvpn_route_up.1 }}'
+   insertbefore='^<ca>$'
+   state=present
+  when: openvpn_route_up.1 is defined
+
+- name: 'Disable script: Route Up'
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^route-up '
+   state=absent
+  when: openvpn_route_up is not defined or openvpn_route_up.1 is not defined

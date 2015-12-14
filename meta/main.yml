@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: Louis T. Getterman IV
+  description: 'OpenVPN client using IPredator service'
+  license: CC-BY-SA
+  min_ansible_version: 1.9
+  platforms:
+    - name: EL
+      versions:
+      - 7
+    - name: Ubuntu
+      versions:
+      - trusty
+    - name: Debian
+      versions:
+      - wheezy
+  categories:
+  - networking
+  - monitoring
+  - system
+dependencies: []

@@ -1,0 +1,27 @@
+---
+- name: 'Script exists: Interface Down'
+  stat: >
+   path='{{ openvpn_if_down.1 }}'
+   follow=yes
+  register: scriptfile
+  when: openvpn_if_down.1 is defined
+
+- fail: >
+   msg='Invalid script for Interface Down: {{ openvpn_if_down.1 }}'
+  when: openvpn_if_down.1 is defined and scriptfile.stat.exists == False
+
+- name: 'Enable script: Interface Down'
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^down '
+   line='down {{ openvpn_if_down.1 }}'
+   insertbefore='^<ca>$'
+   state=present
+  when: openvpn_if_down.1 is defined
+
+- name: 'Disable script: Interface Down'
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^down '
+   state=absent
+  when: openvpn_if_down is not defined or openvpn_if_down.1 is not defined

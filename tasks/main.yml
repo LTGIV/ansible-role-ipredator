@@ -1,0 +1,42 @@
+---
+- name: Load OS-related variables
+  include_vars: '{{ item }}'
+  with_first_found:
+   - '{{ ansible_distribution }}.yml'
+   - '{{ ansible_os_family }}.yml'
+   - 'default.yml'
+
+- name: Installation
+  include: install.yml
+  tags: [install]
+
+- name: Scripts
+  include: scripts.yml
+  tags: [scripts]
+
+- name: Configuration
+  include: configure.yml
+  tags: [configure]
+
+- name: Create messages
+  set_fact: msg_item="{{ item }}"
+  with_items:
+    - '=> Installation complete!  Please note:'
+    - ''
+    - 'Manual Operation: openvpn --config {{ openvpn_path }}/IPredator-CLI-Password.conf'
+    - 'Auto-start is on by default.  Please see the AUTOSTART variable in /etc/default/openvpn for disabling.'
+    - 'ifconfig tun0'
+    - 'ip route show should show 0.0.0.0/1 on interface tun0'
+  register: msg_result
+
+- name: Compile messages
+  set_fact: msgout="{{ msg_result.results | map(attribute='ansible_facts.msg_item') | list }}"
+
+- name: Display message
+  debug: var=msgout
+
+- name: Start VPN
+  command: /bin/true
+  notify:
+    - start openvpn
+  when: openvpn_install_start == True

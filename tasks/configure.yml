@@ -1,0 +1,71 @@
+---
+- name: Download IPredator configuration
+  get_url: >
+   url='https://www.ipredator.se/static/downloads/openvpn/cli/IPredator-CLI-Password.conf'
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   owner={{ openvpn_owner }}
+   group={{ openvpn_group }}
+   mode=0400
+
+#----- Credentials file
+- name: Creating credentials file
+  template: >
+   src=IPredator.auth.j2
+   dest='{{ openvpn_path }}/IPredator.auth'
+   backup=no
+   owner={{ openvpn_owner }}
+   group={{ openvpn_group }}
+   mode=0400
+
+- name: Updating path to credentials file
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^auth-user-pass '
+   line='auth-user-pass {{ openvpn_path }}/IPredator.auth'
+   state=present
+#-----/Credentials file
+
+#----- Enable/Disable tls-version-min 1.2 in IPredator-CLI-Password.conf
+- name: Enable tls-version-min 1.2
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^#[\s]*tls-version-min 1\.2'
+   line='tls-version-min 1.2'
+   state=present
+   backrefs=yes
+  when: openvpn_min_tls12
+
+- name: Disable tls-version-min 1.2
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^tls-version-min 1\.2'
+   line='# tls-version-min 1.2'
+   state=present
+   backrefs=yes
+  when: not openvpn_min_tls12
+#-----/Enable/Disable tls-version-min 1.2 in IPredator-CLI-Password.conf
+
+#----- DNS settings: ensure script-security 2
+- name: 'Set script-security to 2'
+  lineinfile: >
+   dest={{ openvpn_path }}/IPredator-CLI-Password.conf
+   regexp='^script-security '
+   line='script-security 2'
+   insertbefore='^<ca>$'
+   state=present
+#-----/DNS settings: ensure script-security 2
+
+- name: Configure - Interface Up
+  include: configure-ifup.yml
+
+- name: Configure - Interface Down
+  include: configure-ifdown.yml
+
+- name: Configure - Route Up
+  include: configure-routeup.yml
+
+#----- Configuration for OS Family (this method due to https://github.com/ansible/ansible/issues/10020)
+- name: OS Family Configure - RedHat
+  include: configure-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+#-----/Configuration for OS Family

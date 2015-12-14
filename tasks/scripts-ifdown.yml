@@ -1,0 +1,23 @@
+---
+- name: 'Install Template: Generic Script - Interface Down'
+  template: >
+   src=vpn-scripts.bash.j2
+   dest='{{ openvpn_if_down.1 }}'
+   backup=no
+   force=yes
+   owner={{ openvpn_owner }}
+   group={{ openvpn_group }}
+   mode=0700
+  when: openvpn_if_down is defined and openvpn_if_down.0 == 'template' and openvpn_if_down.1 is defined
+
+- name: 'Copy Program: Interface Down'
+  copy: >
+   src=openvpn_if_down.0
+   dest=openvpn_if_down.1
+   backup=no
+   follow=yes
+   force=yes
+   owner={{ openvpn_owner }}
+   group={{ openvpn_group }}
+   mode=0700
+  when: openvpn_if_down is defined and (openvpn_if_down.0 != '' and openvpn_if_down.0 != 'template') and openvpn_if_down.1 is defined

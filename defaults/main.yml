@@ -1,0 +1,17 @@
+---
+# OpenVPN
+openvpn_path: '/etc/openvpn'
+
+# TLS 1.2 support?
+openvpn_min_tls12: yes
+
+# Routing information (useful for VPN route template to allow direct contact)
+openvpn_route_address: '{{ ansible_default_ipv4.address }}'
+openvpn_route_network: '{{ ansible_default_ipv4.network }}'
+openvpn_route_netmask: '{{ ansible_default_ipv4.netmask }}'
+openvpn_route_cidr: '{{ ansible_default_ipv4.netmask|netmask_to_cidr }}'
+openvpn_route_if: '{{ ansible_default_ipv4.interface }}'
+openvpn_route_gateway: '{{ ansible_default_ipv4.gateway }}'
+
+# Start VPN after install?
+openvpn_install_start: no

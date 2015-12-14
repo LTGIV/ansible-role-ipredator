@@ -1,0 +1,10 @@
+---
+#----- Installation for OS Family (this method due to https://github.com/ansible/ansible/issues/10020)
+- name: OS Family Installer - Debian
+  include: install-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: OS Family Installer - RedHat
+  include: install-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+#-----/Installation for OS Family

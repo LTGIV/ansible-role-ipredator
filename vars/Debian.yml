@@ -1,0 +1,7 @@
+---
+# DNS settings: avoid DNS leaks
+openvpn_if_up: ['', '/etc/openvpn/update-resolv-conf']
+openvpn_if_down: ['', '/etc/openvpn/update-resolv-conf']
+
+# Direct route
+openvpn_route_up: ['template', '/usr/local/bin/vpn-route-up']

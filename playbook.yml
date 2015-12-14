@@ -1,0 +1,45 @@
+---
+#
+# Ansible playbook : OpenVPN client using IPredator service to assist in network diagnostics.
+# Louis T. Getterman IV (@LTGIV)
+#
+# Example Usage:
+# [user@host ~$] ansible-playbook playbook.yml --extra-vars 'target=InventoryHost'
+#
+
+- hosts: '{{ target }}'
+  sudo: yes
+
+  vars_prompt:
+    - name: "ipredator_username"
+      prompt: "Enter IPredator username"
+      private: no
+
+    - name: "ipredator_password"
+      prompt: "Enter IPredator password"
+      private: yes
+
+  roles:
+  - { # IPredator
+      role: .,
+      #----- Variables
+      # Configuration
+      openvpn_path: '/etc/openvpn',
+      openvpn_owner: root,
+      openvpn_group: root,
+      openvpn_min_tls12: no,
+      openvpn_install_start: no,
+
+      # Network
+      openvpn_route_if: eth0,
+      openvpn_route_address: 192.168.1.10,
+      openvpn_route_netmask: 255.255.255.0,
+      openvpn_route_gateway: 192.168.1.1,
+      openvpn_route_network: 192.168.1.0,
+
+      # Scripts
+      openvpn_if_up: ['', '/etc/openvpn/update-resolv-conf'],
+      openvpn_if_down: ['', '/etc/openvpn/update-resolv-conf'],
+      openvpn_route_up: ['template', '/usr/local/bin/vpn-route-up'],
+      #-----/Variables
+    }

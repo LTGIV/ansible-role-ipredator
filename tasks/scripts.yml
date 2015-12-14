@@ -1,0 +1,9 @@
+---
+- name: Scripts - Interface Up
+  include: scripts-ifup.yml
+
+- name: Scripts - Interface Down
+  include: scripts-ifdown.yml
+
+- name: Scripts - Route Up
+  include: scripts-routeup.yml

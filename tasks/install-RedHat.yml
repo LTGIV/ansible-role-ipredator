@@ -1,0 +1,8 @@
+---
+- name: 'Install VPN tools (OS Family: RedHat)'
+  yum: >
+   update_cache=yes
+   pkg={{ item }}
+   state=installed
+  with_items:
+    - openvpn
